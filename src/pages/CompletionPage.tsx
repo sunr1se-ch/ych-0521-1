@@ -197,6 +197,11 @@ export default function CompletionPage() {
                         裱糊 {umbrella.pastingCount} 次 · 完工于{' '}
                         {umbrella.completedAt && formatDate(umbrella.completedAt)}
                       </p>
+                      {umbrella.completionNote && (
+                        <p className="text-xs text-ink-500 mt-1">
+                          备注：{umbrella.completionNote}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <button

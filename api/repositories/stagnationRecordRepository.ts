@@ -3,7 +3,7 @@ import { StagnationRecord, StagnationWithUmbrella } from '../../shared/types';
 
 export function findAllStagnations(resolved?: boolean): StagnationWithUmbrella[] {
   let sql = `
-    SELECT s.*, u.id as u_id, u.umbrella_no, u.planned_interval_days, u.status, u.created_at as u_created_at, u.completed_at
+    SELECT s.*, u.id as u_id, u.umbrella_no, u.planned_interval_days, u.status, u.created_at as u_created_at, u.completed_at, u.completion_note
     FROM stagnation_record s
     JOIN umbrella u ON s.umbrella_id = u.id
   `;
@@ -35,6 +35,7 @@ export function findAllStagnations(resolved?: boolean): StagnationWithUmbrella[]
       status: row.status,
       createdAt: row.u_created_at,
       completedAt: row.completed_at,
+      completionNote: row.completion_note,
     },
   }));
 }
@@ -53,6 +54,29 @@ export function createStagnationRecord(data: {
   `).run(data.id, data.umbrellaId, data.triggeredByRecordId, data.reason, data.stagnantDate);
 
   const row = db.prepare('SELECT * FROM stagnation_record WHERE id = ?').get(data.id) as any;
+
+  return {
+    id: row.id,
+    umbrellaId: row.umbrella_id,
+    triggeredByRecordId: row.triggered_by_record_id,
+    reason: row.reason,
+    stagnantDate: row.stagnant_date,
+    resolved: Boolean(row.resolved),
+    resolvedAt: row.resolved_at,
+    resolutionNote: row.resolution_note,
+    createdAt: row.created_at,
+  };
+}
+
+export function findUnresolvedByUmbrellaId(umbrellaId: string): StagnationRecord | null {
+  const row = db.prepare(`
+    SELECT * FROM stagnation_record
+    WHERE umbrella_id = ? AND resolved = 0
+    ORDER BY created_at DESC
+    LIMIT 1
+  `).get(umbrellaId) as any;
+
+  if (!row) return null;
 
   return {
     id: row.id,

@@ -151,6 +151,11 @@ export default function UmbrellaDetail() {
                   <span>完工时间：{formatDate(umbrellaDetail.completedAt)}</span>
                 </div>
               )}
+              {umbrellaDetail.completionNote && (
+                <div className="flex items-center gap-2 text-xs opacity-80">
+                  <span>完工备注：{umbrellaDetail.completionNote}</span>
+                </div>
+              )}
             </div>
           </div>
           {!isCompleted && (

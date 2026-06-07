@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import * as umbrellaService from '../services/umbrellaService';
+import { DuplicateUmbrellaError, ValidationError } from '../services/umbrellaService';
 import { ApiResponse } from '../../shared/types';
 
 const router = Router();
@@ -53,14 +54,14 @@ router.get('/:id', (req: Request, res: Response) => {
 router.post('/', (req: Request, res: Response) => {
   try {
     const { umbrellaNo, plannedIntervalDays } = req.body;
-    if (!umbrellaNo || !plannedIntervalDays) {
+    if (umbrellaNo === undefined || umbrellaNo === null || plannedIntervalDays === undefined || plannedIntervalDays === null) {
       const response: ApiResponse<null> = {
         success: false,
         error: '缺少必要参数',
       };
       return res.status(400).json(response);
     }
-    const umbrella = umbrellaService.createUmbrella(umbrellaNo, plannedIntervalDays);
+    const umbrella = umbrellaService.createUmbrella(umbrellaNo, Number(plannedIntervalDays));
     const response: ApiResponse<typeof umbrella> = {
       success: true,
       data: umbrella,
@@ -71,7 +72,13 @@ router.post('/', (req: Request, res: Response) => {
       success: false,
       error: error instanceof Error ? error.message : '创建伞号失败',
     };
-    res.status(500).json(response);
+    if (error instanceof DuplicateUmbrellaError) {
+      res.status(409).json(response);
+    } else if (error instanceof ValidationError) {
+      res.status(400).json(response);
+    } else {
+      res.status(500).json(response);
+    }
   }
 });
 
@@ -97,14 +104,15 @@ router.post('/:id/pasting', (req: Request, res: Response) => {
       success: false,
       error: error instanceof Error ? error.message : '添加裱糊记录失败',
     };
-    res.status(400).json(response);
+    const statusCode = error instanceof ValidationError ? 400 : 400;
+    res.status(statusCode).json(response);
   }
 });
 
 router.post('/:id/complete', (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { completedDate } = req.body;
+    const { completedDate, note } = req.body;
     if (!completedDate) {
       const response: ApiResponse<null> = {
         success: false,
@@ -112,7 +120,7 @@ router.post('/:id/complete', (req: Request, res: Response) => {
       };
       return res.status(400).json(response);
     }
-    const umbrella = umbrellaService.completeUmbrella(id, completedDate);
+    const umbrella = umbrellaService.completeUmbrella(id, completedDate, note);
     const response: ApiResponse<typeof umbrella> = {
       success: true,
       data: umbrella,
@@ -123,7 +131,8 @@ router.post('/:id/complete', (req: Request, res: Response) => {
       success: false,
       error: error instanceof Error ? error.message : '登记完工失败',
     };
-    res.status(400).json(response);
+    const statusCode = error instanceof ValidationError ? 400 : 400;
+    res.status(statusCode).json(response);
   }
 });
 

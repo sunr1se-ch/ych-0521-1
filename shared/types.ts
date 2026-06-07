@@ -7,6 +7,7 @@ export interface Umbrella {
   status: UmbrellaStatus;
   createdAt: string;
   completedAt: string | null;
+  completionNote: string | null;
 }
 
 export interface PastingRecord {

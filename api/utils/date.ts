@@ -1,9 +1,14 @@
 export function daysBetween(date1: string, date2: string): number {
   const d1 = new Date(date1);
   const d2 = new Date(date2);
-  const diffTime = Math.abs(d2.getTime() - d1.getTime());
+  const diffTime = d2.getTime() - d1.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   return diffDays;
+}
+
+export function isValidDate(dateStr: string): boolean {
+  const date = new Date(dateStr);
+  return date instanceof Date && !isNaN(date.getTime());
 }
 
 export function formatDate(date: string | Date): string {

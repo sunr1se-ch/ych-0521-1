@@ -34,11 +34,27 @@ export function findAllUmbrellas(status?: string, search?: string): UmbrellaList
       status: row.status as UmbrellaStatus,
       createdAt: row.created_at,
       completedAt: row.completed_at,
+      completionNote: row.completion_note,
       lastPastingDate: row.last_pasting_date,
       pastingCount: row.pasting_count,
       currentStagnation: stagnation,
     };
   });
+}
+
+export function findUmbrellaByNo(umbrellaNo: string): Umbrella | null {
+  const row = db.prepare('SELECT * FROM umbrella WHERE umbrella_no = ?').get(umbrellaNo) as any;
+  if (!row) return null;
+
+  return {
+    id: row.id,
+    umbrellaNo: row.umbrella_no,
+    plannedIntervalDays: row.planned_interval_days,
+    status: row.status as UmbrellaStatus,
+    createdAt: row.created_at,
+    completedAt: row.completed_at,
+    completionNote: row.completion_note,
+  };
 }
 
 export function findUmbrellaById(id: string): UmbrellaDetail | null {
@@ -64,6 +80,7 @@ export function findUmbrellaById(id: string): UmbrellaDetail | null {
     status: row.status as UmbrellaStatus,
     createdAt: row.created_at,
     completedAt: row.completed_at,
+    completionNote: row.completion_note,
     records: records.map(r => ({
       id: r.id,
       umbrellaId: r.umbrella_id,
@@ -120,10 +137,10 @@ export function createUmbrella(data: { id: string; umbrellaNo: string; plannedIn
   return findUmbrellaById(data.id)!;
 }
 
-export function updateUmbrellaStatus(id: string, status: UmbrellaStatus, completedAt?: string): void {
+export function updateUmbrellaStatus(id: string, status: UmbrellaStatus, completedAt?: string, completionNote?: string): void {
   if (completedAt) {
-    db.prepare('UPDATE umbrella SET status = ?, completed_at = ? WHERE id = ?')
-      .run(status, completedAt, id);
+    db.prepare('UPDATE umbrella SET status = ?, completed_at = ?, completion_note = ? WHERE id = ?')
+      .run(status, completedAt, completionNote || null, id);
   } else {
     db.prepare('UPDATE umbrella SET status = ? WHERE id = ?').run(status, id);
   }
