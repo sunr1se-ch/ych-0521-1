@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  body {
+    background-color: #F5F0E6;
+    color: #2C2C2C;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Noto Serif SC', serif;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-paper-50 rounded-lg border border-paper-200 shadow-card transition-all duration-300 hover:shadow-card-hover;
+  }
+
+  .btn-primary {
+    @apply px-4 py-2 bg-cinnabar-600 text-white rounded-lg font-medium transition-all duration-200 hover:bg-cinnabar-700 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-bamboo-600 text-white rounded-lg font-medium transition-all duration-200 hover:bg-bamboo-700 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-outline {
+    @apply px-4 py-2 border border-paper-300 text-ink-700 rounded-lg font-medium transition-all duration-200 hover:bg-paper-100 hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .input-field {
+    @apply w-full px-3 py-2 bg-white border border-paper-300 rounded-lg text-ink-700 transition-all duration-200 focus:outline-none focus:border-gold-400 focus:ring-1 focus:ring-gold-400;
+  }
+
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .status-normal {
+    @apply status-badge bg-bamboo-100 text-bamboo-700;
+  }
+
+  .status-stagnant {
+    @apply status-badge bg-cinnabar-100 text-cinnabar-600;
+  }
+
+  .status-completed {
+    @apply status-badge bg-ink-100 text-ink-600;
+  }
+
+  .nav-tab {
+    @apply px-4 py-3 font-medium text-ink-600 border-b-2 border-transparent transition-all duration-200 hover:text-bamboo-600;
+  }
+
+  .nav-tab-active {
+    @apply nav-tab text-cinnabar-600 border-cinnabar-600;
+  }
+
+  .gold-line {
+    @apply relative;
+  }
+
+  .gold-line::after {
+    content: '';
+    @apply absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-400 to-transparent opacity-50;
+  }
+}
+
+@layer utilities {
+  .text-shadow-gold {
+    text-shadow: 0 1px 2px rgba(212, 175, 55, 0.3);
+  }
+
+  .paper-texture {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-blend-mode: soft-light;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: #EBE3D0;
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #DDD0B3;
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #C9A227;
+  }
+}
+
+/* 动画延迟类 */
+.animation-delay-0 { animation-delay: 0ms; }
+.animation-delay-80 { animation-delay: 80ms; }
+.animation-delay-160 { animation-delay: 160ms; }
+.animation-delay-240 { animation-delay: 240ms; }
+.animation-delay-320 { animation-delay: 320ms; }
+.animation-delay-400 { animation-delay: 400ms; }

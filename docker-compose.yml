@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - umbrella-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - DB_PATH=/data/umbrella.db
+    volumes:
+      - ./data:/data
+      - ./migrations:/app/migrations
+    restart: unless-stopped
+    networks:
+      - umbrella-network
+
+volumes:
+  data:
+
+networks:
+  umbrella-network:
+    driver: bridge
